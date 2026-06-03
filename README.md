@@ -4,6 +4,8 @@ A lightweight Windows utility that automatically shuts down your PC after a down
 
 Auto Shutdown monitors your internet activity while a download is running. Once the download appears to be complete, it starts a visible shutdown countdown, giving you time to cancel. If downloading resumes during the countdown, the shutdown is cancelled automatically.
 
+![Auto Shutdown interface](screenshot.png)
+
 ## Features
 
 * Automatically shuts down your PC after downloads finish
