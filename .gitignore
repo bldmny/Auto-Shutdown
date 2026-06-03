@@ -1,0 +1,14 @@
+# User settings
+settings.ini
+
+# Temporary settings files
+settings.*.tmp
+settings.*.bak
+
+# Generated executables
+AutoShutdown.exe
+AutoShutdownSetup.exe
+
+# Inno Setup output
+Installer Output/
+Output/
