@@ -1,14 +1,36 @@
-# User settings
+# Runtime settings created next to the app
 settings.ini
-
-# Temporary settings files
 settings.*.tmp
 settings.*.bak
 
-# Generated executables
-AutoShutdown.exe
-AutoShutdownSetup.exe
+# Build output
+release/
+*.exe
+*.exe.config
 
 # Inno Setup output
-Installer Output/
 Output/
+*.setup.exe
+
+# PowerShell / editor noise
+*.ps1xml
+*.pssc
+*.psd1.bak
+*.psm1.bak
+
+# Windows / Explorer noise
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+
+# IDE/editor folders
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
