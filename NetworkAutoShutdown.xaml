@@ -1,0 +1,689 @@
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    Title="Auto Shutdown"
+    Width="500"
+    Height="424"
+    MinWidth="500"
+    MinHeight="424"
+    MaxWidth="500"
+    MaxHeight="424"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    AllowsTransparency="False"
+    Background="{DynamicResource PageBackground}"
+    FontFamily="Segoe UI"
+    FontSize="12"
+    UseLayoutRounding="True"
+    SnapsToDevicePixels="True">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome
+            CaptionHeight="32"
+            ResizeBorderThickness="0"
+            GlassFrameThickness="0"
+            UseAeroCaptionButtons="False"
+            CornerRadius="0" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <LinearGradientBrush
+            x:Key="PageBackground"
+            StartPoint="0,0"
+            EndPoint="1,1">
+            <GradientStop Color="#08101F" Offset="0" />
+            <GradientStop Color="#1D355C" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="PanelBackground" Color="#1E293B" />
+        <SolidColorBrush x:Key="PanelBorder" Color="#334155" />
+        <SolidColorBrush x:Key="Text" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="MutedText" Color="#94A3B8" />
+        <SolidColorBrush x:Key="SecondaryBackground" Color="#1E293B" />
+        <SolidColorBrush x:Key="SecondaryHover" Color="#26364E" />
+        <SolidColorBrush x:Key="SecondaryBorder" Color="#475569" />
+        <SolidColorBrush x:Key="ButtonText" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="InputBackground" Color="#1E293B" />
+        <SolidColorBrush x:Key="InputText" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="InputBorder" Color="#CBD5E1" />
+        <SolidColorBrush x:Key="AlertText" Color="#F87171" />
+        <SolidColorBrush x:Key="StatusNeutral" Color="#94A3B8" />
+        <SolidColorBrush x:Key="StatusSuccess" Color="#4ADE80" />
+        <SolidColorBrush x:Key="StatusWarning" Color="#FBBF24" />
+        <SolidColorBrush x:Key="StatusDanger" Color="#F87171" />
+        <SolidColorBrush x:Key="DangerBackground" Color="#B91C1C" />
+        <SolidColorBrush x:Key="DangerHover" Color="#991B1B" />
+        <SolidColorBrush x:Key="DangerBorder" Color="#991B1B" />
+        <SolidColorBrush x:Key="TitleButtonHover" Color="#1E293B" />
+        <SolidColorBrush x:Key="CloseButtonHover" Color="#B91C1C" />
+        <SolidColorBrush x:Key="IconForeground" Color="#E2E8F0" />
+
+        <Style x:Key="BaseText" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{DynamicResource Text}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+        </Style>
+
+        <Style x:Key="MutedTextBlock" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseText}">
+            <Setter Property="Foreground" Value="{DynamicResource MutedText}" />
+        </Style>
+
+        <Style x:Key="UtilityButton" TargetType="{x:Type Button}">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                            x:Name="Chrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SecondaryHover}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Chrome" Property="Opacity" Value="0.88" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Chrome" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TitleButton" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource Text}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource TitleButtonHover}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Chrome" Property="Opacity" Value="0.85" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseTitleButton" TargetType="{x:Type Button}" BasedOn="{StaticResource TitleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource CloseButtonHover}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Chrome" Property="Opacity" Value="0.85" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ThemeToggleButton" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                            x:Name="Chrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="14">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SecondaryHover}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Chrome" Property="Opacity" Value="0.85" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="InputTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Background" Value="{DynamicResource InputBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="CaretBrush" Value="{DynamicResource InputText}" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer
+                                x:Name="PART_ContentHost"
+                                Margin="{TemplateBinding Padding}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ComboItem" TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="Background" Value="{DynamicResource InputBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+            <Setter Property="Padding" Value="7,5" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource SecondaryHover}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InputComboBox" TargetType="{x:Type ComboBox}">
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Background" Value="{DynamicResource InputBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource ComboItem}" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Grid SnapsToDevicePixels="True">
+                            <ToggleButton
+                                x:Name="ToggleButton"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                ClickMode="Press"
+                                Foreground="{TemplateBinding Foreground}"
+                                Focusable="False"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                        <Border
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                            <Grid>
+                                                <ContentPresenter
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    Margin="7,0,26,0"
+                                                    TextElement.Foreground="{DynamicResource InputText}" />
+                                                <Path
+                                                    Width="8"
+                                                    Height="4"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,0,9,0"
+                                                    Fill="{DynamicResource InputText}"
+                                                    Data="M 0 0 L 4 4 L 8 0 Z" />
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                                <ContentPresenter
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                    TextElement.Foreground="{DynamicResource InputText}" />
+                            </ToggleButton>
+                            <Popup
+                                x:Name="PART_Popup"
+                                AllowsTransparency="True"
+                                Focusable="False"
+                                IsOpen="{TemplateBinding IsDropDownOpen}"
+                                Placement="Bottom"
+                                PopupAnimation="Fade">
+                                <Border
+                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Background="{DynamicResource InputBackground}"
+                                    BorderBrush="{DynamicResource InputBorder}"
+                                    BorderThickness="1">
+                                    <ScrollViewer MaxHeight="140">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+                                <Setter TargetName="ToggleButton" Property="Opacity" Value="0.7" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource PageBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition Height="392" />
+        </Grid.RowDefinitions>
+
+        <Canvas
+            x:Name="StarLayer"
+            Grid.RowSpan="2"
+            ClipToBounds="True"
+            IsHitTestVisible="False" />
+
+        <Grid
+            Grid.Row="0"
+            Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="46" />
+                <ColumnDefinition Width="46" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel
+                Grid.Column="0"
+                Orientation="Horizontal"
+                VerticalAlignment="Center"
+                Margin="10,0,0,0">
+                <Image
+                    x:Name="AppIconImage"
+                    Width="16"
+                    Height="16"
+                    Stretch="Uniform" />
+                <TextBlock
+                    Style="{StaticResource BaseText}"
+                    Text="Auto Shutdown"
+                    Margin="7,0,0,1" />
+            </StackPanel>
+
+            <Button
+                x:Name="MinimizeButton"
+                Grid.Column="1"
+                Style="{StaticResource TitleButton}">
+                <TextBlock
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="10"
+                    Text="&#xE921;"
+                    TextAlignment="Center" />
+            </Button>
+
+            <Button
+                x:Name="CloseButton"
+                Grid.Column="2"
+                Style="{StaticResource CloseTitleButton}">
+                <TextBlock
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="10"
+                    Text="&#xE8BB;"
+                    TextAlignment="Center" />
+            </Button>
+        </Grid>
+
+        <Canvas
+            x:Name="ContentSurface"
+            Grid.Row="1"
+            Width="500"
+            Height="392"
+            Background="Transparent">
+
+            <TextBlock
+                Canvas.Left="140"
+                Canvas.Top="20"
+                Width="220"
+                Height="48"
+                Style="{StaticResource BaseText}"
+                FontFamily="Impact"
+                FontSize="30"
+                Text="AUTO SHUTDOWN"
+                TextAlignment="Center" />
+
+            <TextBlock
+                Canvas.Left="227"
+                Canvas.Top="70"
+                Width="46"
+                Height="18"
+                Style="{StaticResource MutedTextBlock}"
+                Text="v.1.1"
+                TextAlignment="Center" />
+
+            <Button
+                x:Name="ThemeToggleButton"
+                Canvas.Left="448"
+                Canvas.Top="62"
+                Style="{StaticResource ThemeToggleButton}">
+                <Grid Width="16" Height="16">
+                    <Path
+                        x:Name="MoonIcon"
+                        Fill="{DynamicResource IconForeground}"
+                        Stretch="Uniform"
+                        Data="M 11.7 1.2 C 9.9 1.7 8.6 3.4 8.6 5.4 C 8.6 8.4 11 10.8 14 10.8 C 14.3 10.8 14.7 10.8 15 10.7 C 14.2 13.1 11.9 14.8 9.2 14.8 C 5.8 14.8 3 12 3 8.6 C 3 5.5 5.3 2.8 8.3 2.4 C 9.4 2.2 10.6 1.8 11.7 1.2 Z" />
+                    <Canvas
+                        x:Name="SunIcon"
+                        Width="16"
+                        Height="16"
+                        Visibility="Collapsed">
+                        <Ellipse
+                            Canvas.Left="5.25"
+                            Canvas.Top="5.25"
+                            Width="5.5"
+                            Height="5.5"
+                            Stroke="{DynamicResource IconForeground}"
+                            StrokeThickness="1.5" />
+                        <Path
+                            Stroke="{DynamicResource IconForeground}"
+                            StrokeThickness="1.4"
+                            StrokeStartLineCap="Round"
+                            StrokeEndLineCap="Round"
+                            Data="M 8 1 L 8 2.7 M 8 13.3 L 8 15 M 1 8 L 2.7 8 M 13.3 8 L 15 8 M 3 3 L 4.2 4.2 M 11.8 11.8 L 13 13 M 13 3 L 11.8 4.2 M 4.2 11.8 L 3 13" />
+                    </Canvas>
+                </Grid>
+            </Button>
+
+            <Canvas
+                x:Name="MainView"
+                Canvas.Left="24"
+                Canvas.Top="96"
+                Width="452"
+                Height="296">
+                <Border
+                    x:Name="MainStatusPanel"
+                    Width="452"
+                    Height="132"
+                    Background="{DynamicResource PanelBackground}"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1">
+                    <Canvas>
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="13"
+                            Width="130"
+                            Height="18"
+                            Style="{StaticResource MutedTextBlock}"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Text="LIVE STATUS" />
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="43"
+                            Width="130"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Speed" />
+                        <TextBlock
+                            x:Name="SpeedValueText"
+                            Canvas.Left="170"
+                            Canvas.Top="43"
+                            Width="240"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            FontWeight="SemiBold"
+                            Text="Not monitoring"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="73"
+                            Width="130"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Status" />
+                        <TextBlock
+                            x:Name="StatusValueText"
+                            Canvas.Left="170"
+                            Canvas.Top="73"
+                            Width="240"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            FontWeight="SemiBold"
+                            Text="Idle"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="103"
+                            Width="140"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Operation delay" />
+                        <TextBlock
+                            x:Name="CountdownValueText"
+                            Canvas.Left="170"
+                            Canvas.Top="103"
+                            Width="240"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            FontWeight="SemiBold"
+                            Text="None"
+                            TextTrimming="CharacterEllipsis" />
+                    </Canvas>
+                </Border>
+
+                <TextBlock
+                    x:Name="CurrentSettingsText"
+                    Canvas.Left="0"
+                    Canvas.Top="156"
+                    Width="452"
+                    Height="22"
+                    IsHitTestVisible="False"
+                    Style="{StaticResource MutedTextBlock}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis" />
+
+                <Button
+                    x:Name="StartButton"
+                    Canvas.Left="37"
+                    Canvas.Top="231"
+                    Width="160"
+                    Style="{StaticResource UtilityButton}"
+                    Content="Start Monitoring" />
+                <Button
+                    x:Name="SettingsButton"
+                    Canvas.Left="209"
+                    Canvas.Top="231"
+                    Width="104"
+                    Style="{StaticResource UtilityButton}"
+                    Content="Settings" />
+                <Button
+                    x:Name="ExitButton"
+                    Canvas.Left="325"
+                    Canvas.Top="231"
+                    Width="90"
+                    Style="{StaticResource UtilityButton}"
+                    Content="Exit" />
+            </Canvas>
+
+            <Canvas
+                x:Name="SettingsView"
+                Canvas.Left="24"
+                Canvas.Top="96"
+                Width="452"
+                Height="296"
+                Visibility="Collapsed">
+                <Border
+                    x:Name="SettingsPanel"
+                    Width="452"
+                    Height="200"
+                    Background="{DynamicResource PanelBackground}"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1">
+                    <Canvas>
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="12"
+                            Width="130"
+                            Height="18"
+                            Style="{StaticResource MutedTextBlock}"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Text="SETTINGS" />
+
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="40"
+                            Width="130"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Threshold" />
+                        <TextBox
+                            x:Name="ThresholdBox"
+                            Canvas.Left="170"
+                            Canvas.Top="38"
+                            Width="104"
+                            Style="{StaticResource InputTextBox}" />
+                        <ComboBox
+                            x:Name="ThresholdUnitBox"
+                            Canvas.Left="284"
+                            Canvas.Top="38"
+                            Width="86"
+                            Style="{StaticResource InputComboBox}" />
+
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="70"
+                            Width="130"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Operation delay" />
+                        <TextBox
+                            x:Name="DelayBox"
+                            Canvas.Left="170"
+                            Canvas.Top="68"
+                            Width="104"
+                            Style="{StaticResource InputTextBox}" />
+                        <ComboBox
+                            x:Name="DelayUnitBox"
+                            Canvas.Left="284"
+                            Canvas.Top="68"
+                            Width="86"
+                            Style="{StaticResource InputComboBox}" />
+
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="100"
+                            Width="130"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Monitor" />
+                        <ComboBox
+                            x:Name="MonitorBox"
+                            Canvas.Left="170"
+                            Canvas.Top="98"
+                            Width="180"
+                            Style="{StaticResource InputComboBox}" />
+
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="130"
+                            Width="130"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Operation" />
+                        <ComboBox
+                            x:Name="OperationBox"
+                            Canvas.Left="170"
+                            Canvas.Top="128"
+                            Width="180"
+                            Style="{StaticResource InputComboBox}" />
+
+                        <TextBlock
+                            Canvas.Left="18"
+                            Canvas.Top="160"
+                            Width="130"
+                            Height="22"
+                            Style="{StaticResource BaseText}"
+                            Text="Network" />
+                        <ComboBox
+                            x:Name="NetworkBox"
+                            Canvas.Left="170"
+                            Canvas.Top="158"
+                            Width="180"
+                            Style="{StaticResource InputComboBox}" />
+                    </Canvas>
+                </Border>
+
+                <Button
+                    x:Name="SaveButton"
+                    Canvas.Left="55"
+                    Canvas.Top="231"
+                    Width="112"
+                    Style="{StaticResource UtilityButton}"
+                    Content="Save Settings" />
+                <Button
+                    x:Name="ResetButton"
+                    Canvas.Left="179"
+                    Canvas.Top="231"
+                    Width="116"
+                    Style="{StaticResource UtilityButton}"
+                    Content="Reset Settings" />
+                <Button
+                    x:Name="BackButton"
+                    Canvas.Left="307"
+                    Canvas.Top="231"
+                    Width="90"
+                    Style="{StaticResource UtilityButton}"
+                    Content="Back" />
+            </Canvas>
+
+            <TextBlock
+                x:Name="AlertText"
+                Canvas.Left="24"
+                Canvas.Top="366"
+                Width="452"
+                Height="20"
+                Foreground="{DynamicResource AlertText}"
+                TextTrimming="CharacterEllipsis"
+                Visibility="Collapsed" />
+        </Canvas>
+    </Grid>
+</Window>
